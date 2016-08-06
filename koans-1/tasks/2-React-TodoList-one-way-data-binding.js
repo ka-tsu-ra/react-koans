@@ -3,7 +3,7 @@ import React from "react";
 // Users should be able to add tasks to the list.
 // Task 1: Add the newTaskAddButton to the render and bind it to a the component method addTask
 // Task 2: Implement the `addTask` method. This method should modify the `ToDoList`
-// component's state. Changing the state will render this component and its child components. 
+// component's state. Changing the state will render this component and its child components.
 // Changes in the state must be explicit. That's called one-way data-binding
 
 class TodoList extends React.Component {
@@ -16,6 +16,8 @@ class TodoList extends React.Component {
     };
 
     this.inputChanged = this.inputChanged.bind(this);
+    this.addTask = this.addTask.bind(this);
+    // KJ: whenever that function gets called, with the binding, it gets called with the context of the whole object.
   }
 
   inputChanged(event) {
@@ -25,25 +27,29 @@ class TodoList extends React.Component {
 
   // Task 2. Implement this method to add new tasks to the list
   addTask() {
-    // You need to change this.state using this.setState({your new state}) otherwhise React doesn´t track your changes, 
+    // You need to change this.state using this.setState({your new state}) otherwhise React doesn´t track your changes,
     // in other words it doesn't re-render the task list
-    let tasks = { tasks: [...this.state.tasks] };
+    let tasks = { tasks: [...this.state.tasks, { name: this.refs.txt.value } ] };
+    // KJ: Use the this.refs to connect the addTask function to the value of the input field
     this.setState(tasks);
   }
 
   render() {
     let tasksComponents = this.state.tasks.map((task, index) => (
-        <ListItem />)
+        <ListItem task={task}/>)
     )
     let newTaskInput = <input ref="txt" type="text" onChange={this.inputChanged}/>;
-    let newTaskAddButton = <button>Add new Product</button>;
-  
+    // KJ: by adding ref i get access to it with this.refs
+    // KJ: the ref points to the dom element
+    let newTaskAddButton = <button onClick={this.addTask}>Add new Product</button>;
+
     return (
       <div>
         <ul>
-          // Write some code here
+          {tasksComponents}
         </ul>
-        // Write some code here
+        {newTaskInput}
+        {newTaskAddButton}
       </div>
     );
   }
@@ -51,7 +57,7 @@ class TodoList extends React.Component {
 
 export const ListItem = props => (
     <li>
-        // Write some code here
+        {props.task.name}
     </li>
 )
 
